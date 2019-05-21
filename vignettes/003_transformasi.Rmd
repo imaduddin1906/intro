@@ -3,16 +3,7 @@ title: "Transformasi Data"
 author: "Muhammad Aswan Syahputra"
 date: "4/9/2019"
 output:
-  html_document: 
-    df_print: default
-    fig_height: 6
-    fig_width: 9
-    highlight: textmate
-    keep_md: yes
-    theme: yeti
-    toc: yes
-    toc_collapsed: yes
-    toc_float: yes
+  github_document:
 editor_options: 
   chunk_output_type: inline
 ---
@@ -26,7 +17,7 @@ knitr::opts_chunk$set(echo = TRUE)
 Anda akan menggunakan fungsi `spread` dari paket `tidyr` untuk mengubah memperbaiki dataset 'table2' (juga dari paket `tidyr`). Aktifkanlah paket `tidyr`, lihat dataset 'table2'. Apakah yang membuat dataset tersebut *non-tidy* data? Bukalah dokumentasi fungsi `spread` dengan menjalankan `?nama_fungsi` atau `help(nama_fungsi)`!
 
 ```{r}
-___(tidyr)
+library(tidyr)
 table2
 ```
 
@@ -34,12 +25,13 @@ Dataset 'table2' dapat diperbaiki dengan menjalankan kode berikut:
 
 ```{r}
 table2_tidy <- spread(table2, key = "type", value = "count")
+table2_tidy
 ```
 
 Selanjutnya Anda juga akan memperbaiki dataset 'table4a'. Cetaklah dataset tersebut dan dapatkah Anda menyebutkan alasan mengapa dataset tersebut tidak *tidy* dan *tame*?
 
 ```{r}
-___ # cetak dataset table4a
+table4a # cetak dataset table4a
 ```
 
 Dataset 'table4a' dapat diperbaiki dengan menggunakan fungsi `gather` dari `tidyr`. Anda dapat mempelajari fungsi tersebut dengan menjalankan `?gather`.
@@ -48,22 +40,40 @@ Dataset 'table4a' dapat diperbaiki dengan menggunakan fungsi `gather` dari `tidy
 gather(table4a, key = "year", value = "case", 2:3)
 
 table4a_tidy <- table4a %>% 
-  gather(key = "year", value = "cases", 2:3) # menggunakan tidyverse syntax, pipe %>%
+  gather(key = "year", value = "cases", 2:3, convert = TRUE) # menggunakan tidyverse syntax, pipe %>%
+table4a_tidy
+
 ```
 
 Silakan lakukan hal serupa pada dataset 'table4b' namun dengan menggunakan "population" sebagai isian argumen `value`. Tuliskan juga dengan menggunakan *tidyverse syntax* dan simpan obyek tersebut dengan nama 'table4b_tidy'!
 
 ```{r}
-table4b
+gather(table4b, key = "year", value = "population", 2:3)
 
-table4b_tidy <- ___
+
+table4b_tidy <- table4b %>% 
+  gather(key = "year", value = "population", 2:3, convert = TRUE)
+table4b_tidy
+
 ```
 
 Dataset 'table4a_tidy' dan 'table4b_tidy' tersebut dapat digabungkan menjadi satu dataset. Hal tersebut dapat dilakukan dengan menggunakan fungsi `left_join` dari paket `dplyr` seperti contoh berikut:
 
 ```{r}
-___ # mengaktifkan paket dplyr
-mydata <- left_join(table4a_tidy, table4b_tidy)
+library(dplyr) # mengaktifkan paket dplyr
+
+#cara 1
+mydata <- left_join(table4a_tidy, table4b_tidy, c("country", "year")) %>%
+  arrange(country)
+mydata
+
+#cara 2
+mdata <- mydata %>%
+  arrange(country)
+mdata
+
+identical(table1, mydata)
+
 ```
 
 
@@ -72,8 +82,13 @@ mydata <- left_join(table4a_tidy, table4b_tidy)
 Dataset mydata tersebut merupakan subset dataset Tubercolusis yang diolah dari data 'who' dan 'population' (dari paket `tidyr`). Lihatlah ringkasan kedua tersebut dengan menggunakan `glimpse`!
 
 ```{r}
-___(who)
-___(population)
+library(tidyr)
+glimpse(who)
+glimpse(population)
+
+str(population)
+summary(population)
+
 ```
 
 Sekarang kita akan membuat versi utuh dari dataset 'mydata' dengan menggunakan data seluruh negara pada dataset 'who' sebagai berikut:
@@ -105,8 +120,8 @@ tb_all <-
 
 Dapatkah Anda membuat ringkasan apa saja hal apa saja yang dilakukan pada proses *data wrangling* diatas? (Petunjuk: `?nama_fungsi`)
 
-1. ...
-2. ...
+1. gather -> mengubah wide-format >> long-format
+2. spread -> mengubah long-format >> wide-format
 3. ...
 4. ...
 5. ...
@@ -117,6 +132,6 @@ Dapatkah Anda membuat ringkasan apa saja hal apa saja yang dilakukan pada proses
 Cek apakah dataset 'tb8' sama dengan dataset 'tb_all'! Menurut Anda, cara penulisan *syntax* manakah yang lebih mudah digunakan dan dipahami?
 
 ```{r}
-___(tb8, tb_all)
+identical(tb8, tb_all)
 ```
 
