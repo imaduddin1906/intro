@@ -47,7 +47,7 @@ Anda mendapati suatu fenomena pada grafik diatas, yaitu *overplotting*. *Overplo
 ```{r}
 ggplot(evals, aes(x = bty_avg, y = score)) +
   geom_jitter() +
-  labs(title = "nilai kelas")
+  labs(title = "jitter")
 ```
 
 Anda mendapati bahwa hanya dengan melakukan pengamatan dari grafik tidaklah cukup untuk mempelajari keterkaitan antara `score` dan `bty_avg`. Oleh karena itu, Anda ingin membuat pemodelan regresi linier untuk mempelajari keterkaitan antara kedua variabel tersebut. Buatlah pemodelan tersebut dengan menggunakan fungsi `lm()` dan simpanlah hasilnya dengan nama 'model1'! (Petunjuk: Jalankan `?lm` untuk membaca dokumentasi). Dapatkah Anda menuliskan persamaan linear yang didapatkan dari model1 tersebut?
@@ -77,6 +77,7 @@ model1_vals_broom <-
 ggplot(model1_vals_broom, aes(x = bty_avg, y = score)) +
   geom_jitter() +
   geom_line(aes(y = .fitted))
+  # geom_pointrange(aes(ymax = bty_avg, ymin = .fitted)) // mengetahui residual
 
 # menggunakan paket modelr
 library(modelr)
@@ -113,7 +114,7 @@ Selanjutnya Anda tertarik untuk mempelajari keterkaitan antara `score` dengan `a
 ```{r}
 model2 <- lm(score~age, data = evals)
 
-ggplot(evals, aes(x = age, y = score)) +
+ggplot(model2, aes(x = age, y = score)) +
   geom_jitter() +
   geom_smooth(method = "lm")
 ```
@@ -125,5 +126,6 @@ evals %>%
   gather_predictions(model1, model2) %>% 
   ggplot(aes(x = pred, y = score, colour = model)) +
   geom_jitter() +
-  geom_smooth(method = "lm", se = FALSE)
+  geom_smooth(method = "lm", se = FALSE) + 
+  facet_wrap(~model, scales = "free")
 ```

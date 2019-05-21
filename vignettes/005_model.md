@@ -121,7 +121,7 @@ sebelumnya.
 ``` r
 ggplot(evals, aes(x = bty_avg, y = score)) +
   geom_jitter() +
-  labs(title = "nilai kelas")
+  labs(title = "jitter")
 ```
 
 ![](005_model_files/figure-gfm/unnamed-chunk-4-1.png)<!-- -->
@@ -215,6 +215,8 @@ ggplot(model1_vals_broom, aes(x = bty_avg, y = score)) +
 ![](005_model_files/figure-gfm/unnamed-chunk-7-1.png)<!-- -->
 
 ``` r
+  # geom_pointrange(aes(ymax = bty_avg, ymin = .fitted)) // mengetahui residual
+
 # menggunakan paket modelr
 library(modelr)
 model1_vals_modelr <- 
@@ -298,7 +300,7 @@ value`\!
 ``` r
 model2 <- lm(score~age, data = evals)
 
-ggplot(evals, aes(x = age, y = score)) +
+ggplot(model2, aes(x = age, y = score)) +
   geom_jitter() +
   geom_smooth(method = "lm")
 ```
@@ -317,7 +319,8 @@ evals %>%
   gather_predictions(model1, model2) %>% 
   ggplot(aes(x = pred, y = score, colour = model)) +
   geom_jitter() +
-  geom_smooth(method = "lm", se = FALSE)
+  geom_smooth(method = "lm", se = FALSE) + 
+  facet_wrap(~model, scales = "free")
 ```
 
 ![](005_model_files/figure-gfm/unnamed-chunk-11-1.png)<!-- -->
